@@ -117,6 +117,7 @@ class Utils:
 
         y_next_arr_vec = [method_arr[i](scalarF, xn, yn_vec, h) for i in range(len(method_arr))]
         error_arr_vec = np.array([])
+
         if exact_y_vec is not None:
             if type(exact_y_vec) != type(error_arr_vec):
                 exact_y_vec = np.array(exact_y_vec)

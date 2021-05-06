@@ -4,6 +4,9 @@ from Utils import Utils
 from Euler import Euler
 from Iteration import Iteration
 np.set_printoptions(precision=12)
+# print(2 * pow(np.e, -0.5*0.1) + pow(np.e, -1.5 * 0.1))
+# print(-1 * pow(np.e, -0.5*0.1) - 1.5 * pow(np.e, -1.5*0.1))
+
 
 if __name__ == '__main__':
     # email example (first order)
@@ -83,4 +86,4 @@ if __name__ == '__main__':
     # 결과 출력법
     Utils.printResultOfIteration(coeff_mat=A, b_vec=b_vec)
 
-
+    # TODO n번째 yn구하기, vector input validation(list -> np.ndarray)
