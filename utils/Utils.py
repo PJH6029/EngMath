@@ -1,6 +1,10 @@
 import numpy as np
 import inspect
+from ode.Euler import Euler
+from ode.RK import RK
+
 np.set_printoptions(precision=12)
+
 
 class Utils:
     @staticmethod
@@ -20,6 +24,7 @@ class Utils:
                 *y_vec[1:],
                 F(x, *y_vec)
             ])
+
         return returnF
 
     @staticmethod
@@ -32,10 +37,8 @@ class Utils:
 
     @staticmethod
     def printResult(f, xn, yn, h, exact_y=None):
-        from RK import RK
-        from Euler import Euler
         method_arr = [Euler.eulerMethod, Euler.improvedEulerMethod,
-                       RK.RKClassic, RK.RKFourth, RK.RKFifth]
+                      RK.RKClassic, RK.RKFourth, RK.RKFifth]
 
         y_next_arr = [method_arr[i](f, xn, yn, h) for i in range(len(method_arr))]
         error_arr = list()
@@ -58,14 +61,14 @@ class Utils:
         funcSource = inspect.getsource(f)
         funcLines = funcSource.split('\n')
         maxTab = len(funcLines[0]) - len(funcLines[0].lstrip())
-        for i ,line in enumerate(funcLines):
+        for i, line in enumerate(funcLines):
             funcLines[i] = line[maxTab:]
             maxLength = max(maxLength, len(line[maxTab:]) + 10)
 
         print()
         print(f"{'Result of Approximation':-^{maxLength}}")
         print("Input parameter:")
-        for i ,line in enumerate(funcLines):
+        for i, line in enumerate(funcLines):
             if i == 0:
                 print("function: " + line)
             else:
@@ -99,7 +102,6 @@ class Utils:
         print(f"{'Print finished':-^{maxLength}}")
         print()
 
-
         '''
         y_next_Euler = Euler.eulerMethod(f, xn, yn, h)
         y_next_improvedEuler = Euler.improvedEulerMethod(f, xn, yn, h)
@@ -110,18 +112,16 @@ class Utils:
 
     @staticmethod
     def printResultForSystem(scalarF, xn, yn_vec, h, exact_y_vec=None):
-        from RK import RK
-        from Euler import Euler
         method_arr = [Euler.eulerMethodForSystem, Euler.improvedEulerMethodForSystem,
-                       RK.RKClassicForSystem, RK.RKFourthForSystem, RK.RKFifthForSystem]
+                      RK.RKClassicForSystem, RK.RKFourthForSystem, RK.RKFifthForSystem]
 
         y_next_arr_vec = [method_arr[i](scalarF, xn, yn_vec, h) for i in range(len(method_arr))]
         error_arr_vec = np.array([])
-
         if exact_y_vec is not None:
             if type(exact_y_vec) != type(error_arr_vec):
                 exact_y_vec = np.array(exact_y_vec)
-            error_arr_vec = [Utils.get_real_error_vec(exact_y_vec, y_next_arr_vec[i]) for i in range(len(y_next_arr_vec))]
+            error_arr_vec = [Utils.get_real_error_vec(exact_y_vec, y_next_arr_vec[i]) for i in
+                             range(len(y_next_arr_vec))]
 
         if method_arr:
             nameList = [method_arr[i].__name__ for i in range(len(method_arr))]
@@ -139,14 +139,14 @@ class Utils:
         funcSource = inspect.getsource(scalarF)
         funcLines = funcSource.split('\n')
         maxTab = len(funcLines[0]) - len(funcLines[0].lstrip())
-        for i ,line in enumerate(funcLines):
+        for i, line in enumerate(funcLines):
             funcLines[i] = line[maxTab:]
             maxLength = max(maxLength, len(line[maxTab:]) + 10)
 
         print()
         print(f"{'Result of Approximation(System)':-^{maxLength}}")
         print("Input parameter:")
-        for i ,line in enumerate(funcLines):
+        for i, line in enumerate(funcLines):
             if i == 0:
                 print("function: " + line)
             else:
@@ -188,9 +188,9 @@ class Utils:
 
     @staticmethod
     def printResultOfIteration(coeff_mat, b_vec, epoch=100):
-        from Iteration import Iteration
-        x_GS_vec = Iteration.GaussSeidelMethod(coeff_mat, b_vec)
-        x_J_vec = Iteration.JacobiMethod(coeff_mat, b_vec)
+        from iteration.Iteration import Iteration
+        x_GS_vec = Iteration.GaussSeidelMethod(coeff_mat, b_vec, epoch=epoch)
+        x_J_vec = Iteration.JacobiMethod(coeff_mat, b_vec, epoch=epoch)
 
         print()
         print(f"{'Result of Iteration':-^{50}}")
