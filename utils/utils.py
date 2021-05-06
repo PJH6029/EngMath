@@ -188,7 +188,7 @@ class Utils:
 
     @staticmethod
     def printResultOfIteration(coeff_mat, b_vec, epoch=100):
-        from iteration.Iteration import Iteration
+        from iteration.iteration import Iteration
         x_GS_vec = Iteration.GaussSeidelMethod(coeff_mat, b_vec, epoch=epoch)
         x_J_vec = Iteration.JacobiMethod(coeff_mat, b_vec, epoch=epoch)
 

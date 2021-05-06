@@ -1,8 +1,8 @@
 import numpy as np
 from ode.RK import RK
 from ode.Euler import Euler
-from iteration.Iteration import Iteration
-from utils.Utils import Utils
+from iteration.iteration import Iteration
+from utils.utils import Utils
 
 np.set_printoptions(precision=12)
 

@@ -1,0 +1,2 @@
+class AbstractProblem:
+    pass

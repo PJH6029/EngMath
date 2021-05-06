@@ -1,4 +1,4 @@
-from utils.Utils import Utils
+from utils.utils import Utils
 
 
 class Euler:
