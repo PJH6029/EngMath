@@ -1,6 +1,5 @@
 import numpy as np
 
-
 class PDE:
     @staticmethod
     def PoissonEquation(xrange, yrange, h,
@@ -234,3 +233,117 @@ class PDE:
 
         return u_vec
 
+    @staticmethod
+    def ParabolicPDE(xrange, trange, initial_f, h, r=1, uL=None, uR=None, plot=False):
+        # parabolic PDE: ut = uxx
+        # crank-nicolson method
+
+        from Iteration import Iteration
+        if plot:
+            pass
+
+        if (type(uL) != (int or float)) or (type(uR) != (int or float)):
+            raise Exception("uL or uR is function: not implemented yet")
+        if r != 1:
+            raise Exception("r != 1: not implemented yet")
+
+        k = r * pow(h, 2)
+        x_linspace = np.arange(xrange[0], xrange[1] + h, h)
+        t_linspace = np.arange(trange[0], trange[1] + k, k)
+
+        m = len(x_linspace)
+        n = len(t_linspace)
+
+        # TODO diff < e 등으로 처리해야할듯
+        '''  np.sin이 정확한 값을 뱉지를 않아서 예외처리 불가능.
+        if uL != initial_f(x_linspace[0]) or uR != initial_f(x_linspace[-1]):
+            print(uL, uR, initial_f(x_linspace[0]), initial_f(x_linspace[-1]))
+            raise Exception("invalid boundary condition")
+        '''
+        x_boundary = np.array([uL if i == 0 else (uR if i == m-1 else initial_f(x_linspace[i])) for i in range(m)])
+        t_boundary = np.array([uL, uR])
+
+        result = list()
+        result.append((t_linspace[0], x_boundary))
+
+        for time in t_linspace[1:]:
+            b_vec = np.zeros(m - 2)
+            next_f = np.zeros(m)  # 다음 t에 나타날 f의 근사
+            next_f[0] = t_boundary[0]
+            next_f[-1] = t_boundary[-1]
+
+            # x boundary 빼줌
+            for i in range(1, m - 1):
+                x_boundary_sum = x_boundary[i - 1] + x_boundary[i + 1]
+                b_vec[i - 1] -= x_boundary_sum
+
+            # t boundary 빼줌
+            for i in range(-1, 1):
+                b_vec[i] -= t_boundary[i]
+
+            D = -4 * np.identity(m - 2) + np.eye(m - 2, k=-1) + np.eye(m - 2, k=1)
+
+            inner_next_f = Iteration.GaussSeidelMethod(coeff_mat=D, b_vec=b_vec)
+
+            next_f[1:-1] = inner_next_f
+
+            next_t_and_f = (time, next_f)
+            result.append(next_t_and_f)
+            x_boundary = next_f
+
+        return result
+
+    @staticmethod
+    def HyperbolicPDE(xrange, trange, initial_f, initial_g, h, r=1, uL=None, uR=None, plot=False):
+        # Hyperbolic PDE: utt = uxx
+        # f: u(x, 0). g: ut(x, 0)
+        from Iteration import Iteration
+        if plot:
+            pass
+
+        if (type(uL) != (int or float)) or (type(uR) != (int or float)):
+            raise Exception("uL or uR is function: not implemented yet")
+        if r != 1:
+            raise Exception("r != 1: not implemented yet")
+
+        k = h  # r = 1일때
+        x_linspace = np.arange(xrange[0], xrange[1] + h, h)
+        t_linspace = np.arange(trange[0], trange[1] + k, k)
+
+        m = len(x_linspace)
+        n = len(t_linspace)
+
+        x_boundary = np.array([uL if i == 0 else uR if i == m-1 else initial_f(x_linspace[i]) for i in range(m)])
+        t_boundary = np.array([uL, uR])
+
+        result = list()
+        result.append((t_linspace[0], x_boundary))
+
+        for k, time in enumerate(t_linspace[1:]):
+            next_f = np.zeros(m)  # 다음 t에 나타날 f의 근사
+            next_f[0] = t_boundary[0]
+            next_f[-1] = t_boundary[-1]
+
+            if k == 0:  # first
+                for i in range(1, m - 1):
+                    x_boundary_sum = x_boundary[i - 1] + x_boundary[i + 1]
+                    g_term = k * initial_g(x_linspace[i])
+                    next_f[i] = 0.5 * x_boundary_sum + g_term
+            else:
+                for i in range(1, m - 1):
+                    x_boundary_sum = x_boundary[i - 1] + x_boundary[i + 1] - x_previous_boundary[i]
+                    next_f[i] = x_boundary_sum
+
+            next_t_and_f = (time, next_f)
+            result.append(next_t_and_f)
+            x_previous_boundary = x_boundary
+            x_boundary = next_f
+
+        return result
+def f(x):
+    return np.sin(np.pi * x)
+def g(x):
+    return 0
+a = PDE.HyperbolicPDE(xrange=(0, 1), trange=(0, 1.0), initial_f=f, initial_g=g,
+                            h=0.2, uL=0, uR=0)
+print(a)
