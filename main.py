@@ -87,8 +87,6 @@ if __name__ == '__main__':
     # 결과 출력법
     # Utils.printResultOfIteration(coeff_mat=A, b_vec=b_vec)
 
-    # TODO n번째 yn구하기, vector input validation(list -> np.ndarray)
-
     # -----------------------------------------------------------------------------------------
     # PDE(elliptic example)
 
@@ -114,7 +112,7 @@ if __name__ == '__main__':
         return 12 * x * y
     def uR(x, y):
         return 3 * pow(y, 3)
-    def un(x):
+    def un(x, y):
         return 6 * x
 
     Poisson_Neumann = PDE.PoissonEquation(xrange=(0, 1.5), yrange=(0, 1.0), h=0.5,
@@ -131,7 +129,7 @@ if __name__ == '__main__':
         return pow(x, 2) + pow(y, 2)
     def uT(x, y):
         return 9 * pow(x, 2)
-    def un(y):
+    def un(x, y):
         return 6 * pow(y, 2)
 
     Poisson_Neumann = PDE.PoissonEquation(xrange=(0, 3), yrange=(0, 3), h=1,

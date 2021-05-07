@@ -23,6 +23,33 @@ class Utils:
         return returnF
 
     @staticmethod
+    def getNthApproximation(f, x0, y0, h, n, method=None):
+        from RK import RK
+        from Euler import Euler
+        if not method:
+            method = RK.RKClassic
+        y_next = y0
+        for i in range(n):
+            y_next = method(f, x0, y0, h)
+            x0 += h
+            y0 = y_next
+        return y_next
+
+    @staticmethod
+    def getNthApproximationForSystem(scalarF, x0, y0_vec, h, n, method=None):
+        from RK import RK
+        from Euler import Euler
+        if not method:
+            method = RK.RKClassicForSystem
+        y_next_vec = y0_vec
+        for i in range(n):
+            y_next_vec = method(scalarF=scalarF, xn=x0, yn_vec=y0_vec, h=h)
+            x0 += h
+            y0_vec = y_next_vec
+        return y_next_vec
+
+
+    @staticmethod
     def get_real_error(exact_y, approximated_y):
         return exact_y - approximated_y
 

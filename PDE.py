@@ -100,7 +100,7 @@ class PDE:
     @staticmethod
     def __NeumannWithAxisX(xrange, yrange, h, un, poisson_func, uL=None, uR=None, uB=None, uT=None):
         # uR이 없다는 가정하에 작성
-        # un is a function of y
+        # 모든 u는 function of x, y
 
         from Iteration import Iteration
         x_linspace = np.arange(xrange[0], xrange[1] + h, h)
@@ -153,7 +153,7 @@ class PDE:
 
         # 경계에서 근사치 빼줌
         for right_index in right_boundary_indices:
-            b_vec[right_index] -= 2 * h * un(y_coordinates[right_index])
+            b_vec[right_index] -= 2 * h * un(x_coordinates[right_index], y_coordinates[right_index])
 
         D = -4 * np.identity(m - 1) + np.eye(m - 1, k=-1) + np.eye(m - 1, k=1)
         D[-1][-2] += 1
@@ -169,7 +169,7 @@ class PDE:
     @staticmethod
     def __NeumannWithAxisY(xrange, yrange, h, un, poisson_func, uL=None, uR=None, uB=None, uT=None):
         # uT가 없다는 가정하에 작성
-        # un is a function of x
+        # 모든 u는 function of x, y
 
         from Iteration import Iteration
         x_linspace = np.arange(xrange[0], xrange[1] + h, h)
@@ -222,7 +222,7 @@ class PDE:
 
         # 경계에서 근사치 빼줌
         for top_index in top_boundary_indices:
-            b_vec[top_index] -= 2 * h * un(x_coordinates[top_index])
+            b_vec[top_index] -= 2 * h * un(x_coordinates[top_index], y_coordinates[top_index])
 
         D = -4 * np.identity(m - 2) + np.eye(m - 2, k=-1) + np.eye(m - 2, k=1)
         I = np.identity(m - 2)
